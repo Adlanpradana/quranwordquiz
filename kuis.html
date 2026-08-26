@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kuis arti kata Al-Qur'an, satu ayat demi satu ayat.">
+  <meta name="theme-color" content="#176b4d">
+  <title>Kuis | Quran Word Quiz</title>
+
+  <style>
+    :root {
+      --hijau: #19865f;
+      --hijau-gelap: #176b4d;
+      --hijau-sangat-gelap: #123d30;
+      --hijau-muda: #e8f5ef;
+      --latar: #f1f7f4;
+      --putih: #ffffff;
+      --teks: #173b30;
+      --teks-lembut: #687d75;
+      --garis: #d7e8e0;
+      --merah: #c33b37;
+      --kuning: #ad6c0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(94, 182, 147, 0.15), transparent 25%),
+        var(--latar);
+      font-family: Arial, sans-serif;
+      color: var(--teks);
+    }
+
+    button, select { font: inherit; }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      min-height: calc(100vh - 36px);
+      margin: 0 auto;
+      padding: 24px clamp(14px, 3vw, 34px) 34px;
+      border: 1px solid rgba(215, 232, 224, 0.85);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 38px rgba(16, 80, 58, 0.11);
+    }
+
+    .baris-atas {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .kembali {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border: 1px solid var(--garis);
+      border-radius: 10px;
+      background: var(--putih);
+      color: var(--hijau-gelap);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .kembali:hover { background: #f1f8f5; }
+
+    .pilihan-bahasa {
+      display: flex;
+      padding: 4px;
+      border: 1px solid var(--garis);
+      border-radius: 999px;
+      background: var(--putih);
+    }
+
+    .tombol-bahasa {
+      min-width: 44px;
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--teks-lembut);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tombol-bahasa.aktif {
+      background: var(--hijau-gelap);
+      color: var(--putih);
+    }
+
+    .kembali:focus-visible,
+    .tombol-bahasa:focus-visible,
+    .tombol:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(25, 134, 95, 0.27);
+      outline-offset: 3px;
+    }
+
+    .kepala-kuis {
+      max-width: 750px;
+      margin: 32px auto 0;
+      text-align: center;
+    }
+
+    .nama-arab {
+      direction: rtl;
+      color: var(--hijau-gelap);
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: clamp(36px, 6vw, 50px);
+      line-height: 1.3;
+    }
+
+    h1 {
+      margin: 2px 0 7px;
+      color: var(--hijau-sangat-gelap);
+      font-size: clamp(27px, 4vw, 38px);
+    }
+
+    .info-ayat {
+      margin: 0;
+      color: var(--teks-lembut);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .petunjuk {
+      margin: 9px 0 19px;
+      color: var(--teks-lembut);
+    }
+
+    .progress-container {
+      width: 100%;
+      max-width: 520px;
+      height: 9px;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e1ede7;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--hijau);
+      transition: width 0.25s ease;
+    }
+
+    .ayat {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      gap: 14px;
+      direction: rtl;
+    }
+
+    .kata {
+      width: 195px;
+      padding: 18px 12px;
+      border: 2px solid var(--garis);
+      border-radius: 16px;
+      background: #fbfdfc;
+      transition: border-color 0.18s, background 0.18s;
+    }
+
+    .arab {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      direction: rtl;
+      color: var(--hijau-sangat-gelap);
+      text-align: center;
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 41px;
+      line-height: 1.5;
+    }
+
+    select {
+      width: 100%;
+      padding: 11px 8px;
+      border: 1px solid #b8cdc3;
+      border-radius: 9px;
+      background: var(--putih);
+      color: #243f36;
+      direction: ltr;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .koreksi {
+      min-height: 18px;
+      margin-top: 10px;
+      direction: ltr;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .kata-benar {
+      border-color: #1c9b63;
+      background: #e8f8ef;
+    }
+
+    .kata-salah {
+      border-color: #d64c47;
+      background: #fdeceb;
+    }
+
+    .teks-benar, .hasil-benar { color: #168552; }
+    .teks-salah, .hasil-belajar { color: var(--merah); }
+    .peringatan { color: var(--kuning); }
+
+    #hasil {
+      min-height: 25px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .tombol {
+      width: 100%;
+      max-width: 420px;
+      display: block;
+      margin: 26px auto 0;
+      padding: 15px 18px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--hijau);
+      color: var(--putih);
+      text-align: center;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tombol:hover { background: #126f4e; }
+
+    .tombol-sekunder {
+      margin-top: 12px;
+      border: 1px solid #9ebcaf;
+      background: var(--putih);
+      color: var(--hijau-gelap);
+    }
+
+    .tombol-sekunder:hover { background: #eef7f3; }
+
+    .halaman-hasil,
+    .halaman-error {
+      max-width: 680px;
+      margin: 70px auto 20px;
+      text-align: center;
+    }
+
+    .hasil-arab {
+      margin-bottom: 16px;
+      direction: rtl;
+      color: var(--hijau-gelap);
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 57px;
+    }
+
+    .halaman-hasil h1,
+    .halaman-error h1 { margin-bottom: 14px; }
+
+    .nilai {
+      margin: 23px 0;
+      color: var(--hijau-sangat-gelap);
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    .pesan-error {
+      margin: 18px 0;
+      color: var(--teks-lembut);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+
+      .container {
+        min-height: calc(100vh - 20px);
+        padding: 15px 10px 28px;
+      }
+
+      .kepala-kuis { margin-top: 26px; }
+      .ayat { gap: 10px; }
+
+      .kata {
+        width: calc(50% - 5px);
+        padding: 14px 8px;
+      }
+
+      .arab {
+        min-height: 68px;
+        font-size: 34px;
+      }
+
+      select { font-size: 12px; }
+    }
+
+    @media (max-width: 360px) {
+      .kata { width: 100%; }
+      .kembali span:last-child { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="baris-atas">
+      <a class="kembali" href="pilih-surah.html">
+        <span aria-hidden="true">←</span>
+        <span id="teksKembali">Pilih Surah</span>
+      </a>
+
+      <div class="pilihan-bahasa" role="group" aria-label="Language">
+        <button class="tombol-bahasa aktif" id="bahasaId" type="button" onclick="gantiBahasa('id')" aria-pressed="true">ID</button>
+        <button class="tombol-bahasa" id="bahasaEn" type="button" onclick="gantiBahasa('en')" aria-pressed="false">EN</button>
+      </div>
+    </div>
+
+    <section id="halamanKuis" hidden>
+      <header class="kepala-kuis">
+        <div class="nama-arab" id="namaArab" lang="ar"></div>
+        <h1 id="namaSurah"></h1>
+        <p class="info-ayat" id="infoAyat"></p>
+        <p class="petunjuk" id="petunjuk">Pilih arti yang tepat untuk setiap kata.</p>
+      </header>
+
+      <div class="progress-container" aria-label="Kemajuan kuis">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <section class="ayat" id="ayat"></section>
+      <div id="hasil" role="status" aria-live="polite"></div>
+
+      <button class="tombol" id="tombolPeriksa" type="button" onclick="periksaJawaban()">
+        Periksa Jawaban
+      </button>
+
+      <button class="tombol" id="tombolBerikutnya" type="button" onclick="ayatBerikutnya()" hidden>
+        Ayat Berikutnya
+      </button>
+    </section>
+
+    <section class="halaman-hasil" id="halamanHasil" hidden></section>
+
+    <section class="halaman-error" id="halamanError" hidden>
+      <h1 id="judulError">Data surah belum tersedia</h1>
+      <p class="pesan-error" id="pesanError"></p>
+      <a class="tombol tombol-sekunder" href="pilih-surah.html" id="tombolKembaliError">Kembali ke Pilihan Surah</a>
+    </section>
+  </main>
+
+  <script src="surah-data.js"></script>
+  <script>
+    "use strict";
+
+    const teksBahasa = {
+      id: {
+        teksKembali: "Pilih Surah",
+        petunjuk: "Pilih arti yang tepat untuk setiap kata.",
+        ayat: "Ayat",
+        dari: "dari",
+        pilihArti: "Pilih arti",
+        periksa: "Periksa Jawaban",
+        berikutnya: "Ayat Berikutnya",
+        lihatHasil: "Lihat Hasil",
+        wajibIsi: "Pilih arti untuk seluruh kata terlebih dahulu.",
+        benar: "Benar",
+        jawaban: "Jawaban",
+        semuaBenar: "Alhamdulillah, semua jawaban benar!",
+        jawabanBenar: "jawaban benar",
+        selesai: "Selesai",
+        keteranganSelesai: "Anda telah menyelesaikan seluruh kata dalam surah ini.",
+        ulangi: "Ulangi Surah",
+        pilihLain: "Pilih Surah Lain",
+        judulError: "Data surah belum tersedia",
+        errorData: "Data untuk surah ini belum ditemukan dalam surah-data.js.",
+        errorPilihan: "Surah yang dipilih tidak dikenali. Silakan kembali dan pilih surah dari daftar.",
+        kembaliError: "Kembali ke Pilihan Surah",
+        judulHalaman: "Kuis | Quran Word Quiz"
+      },
+      en: {
+        teksKembali: "Choose Surah",
+        petunjuk: "Choose the correct meaning for each word.",
+        ayat: "Verse",
+        dari: "of",
+        pilihArti: "Choose a meaning",
+        periksa: "Check Answers",
+        berikutnya: "Next Verse",
+        lihatHasil: "View Results",
+        wajibIsi: "Choose a meaning for every word first.",
+        benar: "Correct",
+        jawaban: "Answer",
+        semuaBenar: "Alhamdulillah, all answers are correct!",
+        jawabanBenar: "correct answers",
+        selesai: "Completed",
+        keteranganSelesai: "You have completed all the words in this surah.",
+        ulangi: "Repeat Surah",
+        pilihLain: "Choose Another Surah",
+        judulError: "Surah data is not available",
+        errorData: "The data for this surah was not found in surah-data.js.",
+        errorPilihan: "The selected surah is not recognised. Please return and choose a surah from the list.",
+        kembaliError: "Back to Surah Selection",
+        judulHalaman: "Quiz | Quran Word Quiz"
+      }
+    };
+
+    let bahasaAktif = "id";
+    let slugAktif = "";
+    let surahAktif = null;
+    let indeksAyat = 0;
+    let ayatSudahDiperiksa = false;
+    let skorPerAyat = [];
+
+    function teks() {
+      return teksBahasa[bahasaAktif];
+    }
+
+    function semuaDataSurah() {
+      return window.dataSurah && typeof window.dataSurah === "object"
+        ? window.dataSurah
+        : {};
+    }
+
+    function acakArray(array) {
+      const hasil = [...array];
+      for (let i = hasil.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [hasil[i], hasil[j]] = [hasil[j], hasil[i]];
+      }
+      return hasil;
+    }
+
+    function artiKata(word) {
+      return word[bahasaAktif] || word.id || word.en || "";
+    }
+
+    function kumpulkanArti() {
+      const semuaArti = Object.values(semuaDataSurah()).flatMap(surah =>
+        Array.isArray(surah.ayat)
+          ? surah.ayat.flatMap(ayat =>
+              Array.isArray(ayat.words) ? ayat.words.map(artiKata) : []
+            )
+          : []
+      );
+      return [...new Set(semuaArti.filter(Boolean))];
+    }
+
+    function buatPilihan(jawabanBenar) {
+      const salah = kumpulkanArti().filter(arti => arti !== jawabanBenar);
+      return acakArray([jawabanBenar, ...acakArray(salah).slice(0, 3)]);
+    }
+
+    function buatElemen(tag, className, isi) {
+      const elemen = document.createElement(tag);
+      if (className) elemen.className = className;
+      if (isi !== undefined) elemen.textContent = isi;
+      return elemen;
+    }
+
+    function sembunyikanSemuaHalaman() {
+      document.getElementById("halamanKuis").hidden = true;
+      document.getElementById("halamanHasil").hidden = true;
+      document.getElementById("halamanError").hidden = true;
+    }
+
+    function tampilkanError(jenis) {
+      sembunyikanSemuaHalaman();
+      document.getElementById("judulError").textContent = teks().judulError;
+      document.getElementById("pesanError").textContent =
+        jenis === "data" ? teks().errorData : teks().errorPilihan;
+      document.getElementById("tombolKembaliError").textContent = teks().kembaliError;
+      document.getElementById("halamanError").hidden = false;
+    }
+
+    function mulaiKuis() {
+      slugAktif = new URLSearchParams(window.location.search).get("surah") || "";
+      surahAktif = semuaDataSurah()[slugAktif] || null;
+
+      if (!slugAktif) {
+        tampilkanError("pilihan");
+        return;
+      }
+
+      if (!surahAktif || !Array.isArray(surahAktif.ayat) || surahAktif.ayat.length === 0) {
+        tampilkanError("data");
+        return;
+      }
+
+      indeksAyat = 0;
+      ayatSudahDiperiksa = false;
+      skorPerAyat = new Array(surahAktif.ayat.length).fill(null);
+      sembunyikanSemuaHalaman();
+      document.getElementById("halamanKuis").hidden = false;
+      tampilkanAyat();
+    }
+
+    function tampilkanAyat() {
+      const dataAyat = surahAktif.ayat[indeksAyat];
+      const nomor = dataAyat.nomor ?? dataAyat.ayat ?? indeksAyat + 1;
+      const tempatAyat = document.getElementById("ayat");
+
+      document.title = `${surahAktif.nama} | Quran Word Quiz`;
+      document.getElementById("namaArab").textContent = surahAktif.namaArab || "";
+      document.getElementById("namaSurah").textContent = surahAktif.nama;
+      document.getElementById("infoAyat").textContent =
+        `${teks().ayat} ${nomor} ${teks().dari} ${surahAktif.ayat.length}`;
+      document.getElementById("petunjuk").textContent = teks().petunjuk;
+      document.getElementById("progressBar").style.width =
+        `${((indeksAyat + 1) / surahAktif.ayat.length) * 100}%`;
+
+      tempatAyat.replaceChildren();
+
+      dataAyat.words.forEach(word => {
+        const jawabanBenar = artiKata(word);
+        const kartu = buatElemen("div", "kata");
+        kartu.dataset.jawaban = jawabanBenar;
+
+        const arab = buatElemen("div", "arab", word.arab);
+        arab.lang = "ar";
+
+        const select = document.createElement("select");
+        select.setAttribute("aria-label", `${teks().pilihArti}: ${word.arab}`);
+
+        const pembuka = document.createElement("option");
+        pembuka.value = "";
+        pembuka.textContent = teks().pilihArti;
+        select.appendChild(pembuka);
+
+        buatPilihan(jawabanBenar).forEach(arti => {
+          const option = document.createElement("option");
+          option.value = arti;
+          option.textContent = arti;
+          select.appendChild(option);
+        });
+
+        kartu.append(arab, select, buatElemen("div", "koreksi"));
+        tempatAyat.appendChild(kartu);
+      });
+
+      const hasil = document.getElementById("hasil");
+      hasil.textContent = "";
+      hasil.className = "";
+      document.getElementById("tombolPeriksa").textContent = teks().periksa;
+      document.getElementById("tombolPeriksa").hidden = false;
+      document.getElementById("tombolBerikutnya").hidden = true;
+      ayatSudahDiperiksa = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function periksaJawaban() {
+      if (ayatSudahDiperiksa) return;
+
+      const semuaKata = [...document.querySelectorAll(".kata")];
+      const hasil = document.getElementById("hasil");
+
+      if (semuaKata.some(kata => kata.querySelector("select").value === "")) {
+        hasil.textContent = teks().wajibIsi;
+        hasil.className = "peringatan";
+        return;
+      }
+
+      let benar = 0;
+
+      semuaKata.forEach(kata => {
+        const jawabanBenar = kata.dataset.jawaban;
+        const select = kata.querySelector("select");
+        const koreksi = kata.querySelector(".koreksi");
+        select.disabled = true;
+
+        if (select.value === jawabanBenar) {
+          benar++;
+          kata.classList.add("kata-benar");
+          koreksi.textContent = teks().benar;
+          koreksi.className = "koreksi teks-benar";
+        } else {
+          kata.classList.add("kata-salah");
+          koreksi.textContent = `${teks().jawaban}: ${jawabanBenar}`;
+          koreksi.className = "koreksi teks-salah";
+        }
+      });
+
+      skorPerAyat[indeksAyat] = { benar, total: semuaKata.length };
+      ayatSudahDiperiksa = true;
+
+      if (benar === semuaKata.length) {
+        hasil.textContent = teks().semuaBenar;
+        hasil.className = "hasil-benar";
+      } else {
+        hasil.textContent = `${benar} ${teks().dari} ${semuaKata.length} ${teks().jawabanBenar}.`;
+        hasil.className = "hasil-belajar";
+      }
+
+      document.getElementById("tombolPeriksa").hidden = true;
+      const berikutnya = document.getElementById("tombolBerikutnya");
+      berikutnya.textContent =
+        indeksAyat === surahAktif.ayat.length - 1 ? teks().lihatHasil : teks().berikutnya;
+      berikutnya.hidden = false;
+    }
+
+    function ayatBerikutnya() {
+      if (!ayatSudahDiperiksa) return;
+      indeksAyat++;
+      if (indeksAyat < surahAktif.ayat.length) tampilkanAyat();
+      else tampilkanHasilAkhir();
+    }
+
+    function hitungSkor() {
+      return skorPerAyat.reduce(
+        (jumlah, skor) => ({
+          benar: jumlah.benar + (skor?.benar || 0),
+          total: jumlah.total + (skor?.total || 0)
+        }),
+        { benar: 0, total: 0 }
+      );
+    }
+
+    function tampilkanHasilAkhir() {
+      sembunyikanSemuaHalaman();
+      const halaman = document.getElementById("halamanHasil");
+      halaman.replaceChildren();
+
+      const skor = hitungSkor();
+      const persentase = skor.total ? Math.round((skor.benar / skor.total) * 100) : 0;
+      const arab = buatElemen("div", "hasil-arab", "اَلْحَمْدُ لِلّٰهِ");
+      arab.lang = "ar";
+      const judul = buatElemen("h1", "", `${surahAktif.nama} ${teks().selesai}`);
+      const keterangan = buatElemen("p", "", teks().keteranganSelesai);
+      const nilai = buatElemen(
+        "div",
+        "nilai",
+        `${skor.benar} ${teks().dari} ${skor.total} ${teks().jawabanBenar} (${persentase}%)`
+      );
+
+      const ulangi = buatElemen("button", "tombol", `${teks().ulangi} ${surahAktif.nama}`);
+      ulangi.type = "button";
+      ulangi.addEventListener("click", mulaiKuis);
+
+      const pilihLain = document.createElement("a");
+      pilihLain.className = "tombol tombol-sekunder";
+      pilihLain.href = "pilih-surah.html";
+      pilihLain.textContent = teks().pilihLain;
+
+      halaman.append(arab, judul, keterangan, nilai, ulangi, pilihLain);
+      halaman.hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function gantiBahasa(bahasa) {
+      bahasaAktif = bahasa === "en" ? "en" : "id";
+      document.documentElement.lang = bahasaAktif;
+      document.getElementById("teksKembali").textContent = teks().teksKembali;
+
+      const indonesiaAktif = bahasaAktif === "id";
+      document.getElementById("bahasaId").classList.toggle("aktif", indonesiaAktif);
+      document.getElementById("bahasaEn").classList.toggle("aktif", !indonesiaAktif);
+      document.getElementById("bahasaId").setAttribute("aria-pressed", indonesiaAktif);
+      document.getElementById("bahasaEn").setAttribute("aria-pressed", !indonesiaAktif);
+      localStorage.setItem("bahasaQuranQuiz", bahasaAktif);
+
+      if (!surahAktif) {
+        const jenis = slugAktif ? "data" : "pilihan";
+        tampilkanError(jenis);
+      } else if (!document.getElementById("halamanHasil").hidden) {
+        tampilkanHasilAkhir();
+      } else {
+        tampilkanAyat();
+      }
+    }
+
+    bahasaAktif = localStorage.getItem("bahasaQuranQuiz") === "en" ? "en" : "id";
+    document.documentElement.lang = bahasaAktif;
+    document.getElementById("teksKembali").textContent = teks().teksKembali;
+    document.getElementById("bahasaId").classList.toggle("aktif", bahasaAktif === "id");
+    document.getElementById("bahasaEn").classList.toggle("aktif", bahasaAktif === "en");
+    document.getElementById("bahasaId").setAttribute("aria-pressed", bahasaAktif === "id");
+    document.getElementById("bahasaEn").setAttribute("aria-pressed", bahasaAktif === "en");
+    mulaiKuis();
+  </script>
+</body>
+</html>

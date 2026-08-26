@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Pilih surah untuk memulai Quran Word Quiz.">
+  <meta name="description" content="Pilih Al-Fatihah, surah-surah Juz 30, atau surah populer untuk memulai Quran Word Quiz.">
   <meta name="theme-color" content="#176b4d">
   <title>Pilih Surah | Quran Word Quiz</title>
 
@@ -261,7 +261,7 @@
         <div class="label-kecil" id="labelKecil">Quran Word Quiz</div>
         <h1 id="judul">Pilih Surah</h1>
         <p class="deskripsi" id="deskripsi">
-          Pilih surah yang ingin dipelajari. Kuis akan ditampilkan satu ayat demi satu ayat.
+          Pilih Al-Fatihah, salah satu surah dalam Juz 30, atau surah populer yang ingin dipelajari.
         </p>
       </section>
 
@@ -270,9 +270,14 @@
         <div class="daftar-surah" id="daftarFatihah"></div>
       </section>
 
-      <section class="bagian" aria-labelledby="judul-surah-pendek">
-        <h2 class="judul-bagian" id="judul-surah-pendek">Ad-Duha hingga An-Nas</h2>
-        <div class="daftar-surah" id="daftarPendek"></div>
+      <section class="bagian" aria-labelledby="judul-juz-30">
+        <h2 class="judul-bagian" id="judul-juz-30">Juz 30 · An-Naba hingga An-Nas</h2>
+        <div class="daftar-surah" id="daftarJuz30"></div>
+      </section>
+
+      <section class="bagian" aria-labelledby="judul-surah-populer">
+        <h2 class="judul-bagian" id="judul-surah-populer">Surah Populer</h2>
+        <div class="daftar-surah" id="daftarPopuler"></div>
       </section>
     </main>
 
@@ -284,6 +289,21 @@
 
     const daftarSurah = [
       { nomor: 1, slug: "al-fatihah", nama: "Al-Fatihah", arab: "الْفَاتِحَة", ayat: 7, kelompok: "fatihah" },
+      { nomor: 78, slug: "an-naba", nama: "An-Naba", arab: "النَّبَإ", ayat: 40 },
+      { nomor: 79, slug: "an-naziat", nama: "An-Nazi'at", arab: "النَّازِعَات", ayat: 46 },
+      { nomor: 80, slug: "abasa", nama: "'Abasa", arab: "عَبَسَ", ayat: 42 },
+      { nomor: 81, slug: "at-takwir", nama: "At-Takwir", arab: "التَّكْوِير", ayat: 29 },
+      { nomor: 82, slug: "al-infitar", nama: "Al-Infitar", arab: "الْإِنْفِطَار", ayat: 19 },
+      { nomor: 83, slug: "al-mutaffifin", nama: "Al-Mutaffifin", arab: "الْمُطَفِّفِين", ayat: 36 },
+      { nomor: 84, slug: "al-insyiqaq", nama: "Al-Insyiqaq", arab: "الْإِنْشِقَاق", ayat: 25 },
+      { nomor: 85, slug: "al-buruj", nama: "Al-Buruj", arab: "الْبُرُوج", ayat: 22 },
+      { nomor: 86, slug: "at-tariq", nama: "At-Tariq", arab: "الطَّارِق", ayat: 17 },
+      { nomor: 87, slug: "al-ala", nama: "Al-A'la", arab: "الْأَعْلَىٰ", ayat: 19 },
+      { nomor: 88, slug: "al-gasyiyah", nama: "Al-Gasyiyah", arab: "الْغَاشِيَة", ayat: 26 },
+      { nomor: 89, slug: "al-fajr", nama: "Al-Fajr", arab: "الْفَجْر", ayat: 30 },
+      { nomor: 90, slug: "al-balad", nama: "Al-Balad", arab: "الْبَلَد", ayat: 20 },
+      { nomor: 91, slug: "asy-syams", nama: "Asy-Syams", arab: "الشَّمْس", ayat: 15 },
+      { nomor: 92, slug: "al-lail", nama: "Al-Lail", arab: "اللَّيْل", ayat: 21 },
       { nomor: 93, slug: "ad-duha", nama: "Ad-Duha", arab: "الضُّحَىٰ", ayat: 11 },
       { nomor: 94, slug: "asy-syarh", nama: "Asy-Syarh", arab: "الشَّرْح", ayat: 8 },
       { nomor: 95, slug: "at-tin", nama: "At-Tin", arab: "التِّين", ayat: 8 },
@@ -305,31 +325,38 @@
       { nomor: 111, slug: "al-lahab", nama: "Al-Lahab", arab: "الْمَسَد", ayat: 5 },
       { nomor: 112, slug: "al-ikhlas", nama: "Al-Ikhlas", arab: "الْإِخْلَاص", ayat: 4 },
       { nomor: 113, slug: "al-falaq", nama: "Al-Falaq", arab: "الْفَلَق", ayat: 5 },
-      { nomor: 114, slug: "an-nas", nama: "An-Nas", arab: "النَّاس", ayat: 6 }
+      { nomor: 114, slug: "an-nas", nama: "An-Nas", arab: "النَّاس", ayat: 6 },
+      { nomor: 18, slug: "al-kahf", nama: "Al-Kahf", arab: "الْكَهْف", ayat: 110, kelompok: "populer" },
+      { nomor: 36, slug: "yasin", nama: "Yasin", arab: "يس", ayat: 83, kelompok: "populer" },
+      { nomor: 55, slug: "ar-rahman", nama: "Ar-Rahman", arab: "الرَّحْمَٰن", ayat: 78, kelompok: "populer" },
+      { nomor: 56, slug: "al-waqiah", nama: "Al-Waqi'ah", arab: "الْوَاقِعَة", ayat: 96, kelompok: "populer" },
+      { nomor: 67, slug: "al-mulk", nama: "Al-Mulk", arab: "الْمُلْك", ayat: 30, kelompok: "populer" }
     ];
 
     const teksBahasa = {
       id: {
         teksKembali: "Beranda",
         judul: "Pilih Surah",
-        deskripsi: "Pilih surah yang ingin dipelajari. Kuis akan ditampilkan satu ayat demi satu ayat.",
+        deskripsi: "Pilih Al-Fatihah, salah satu surah dalam Juz 30, atau surah populer yang ingin dipelajari.",
         judulFatihah: "Al-Fatihah",
-        judulPendek: "Ad-Duha hingga An-Nas",
+        judulJuz30: "Juz 30 · An-Naba hingga An-Nas",
+        judulPopuler: "Surah Populer",
         satuAyat: "ayat",
         kaki: "Pilih satu surah untuk mulai belajar.",
         judulHalaman: "Pilih Surah | Quran Word Quiz",
-        deskripsiMeta: "Pilih surah untuk memulai Quran Word Quiz."
+        deskripsiMeta: "Pilih Al-Fatihah, surah-surah Juz 30, atau surah populer untuk memulai Quran Word Quiz."
       },
       en: {
         teksKembali: "Home",
         judul: "Choose a Surah",
-        deskripsi: "Choose a surah to study. The quiz will be presented one verse at a time.",
+        deskripsi: "Choose Al-Fatihah, a surah from Juz 30, or a popular surah you would like to study.",
         judulFatihah: "Al-Fatihah",
-        judulPendek: "Ad-Duha to An-Nas",
+        judulJuz30: "Juz 30 · An-Naba to An-Nas",
+        judulPopuler: "Popular Surahs",
         satuAyat: "verses",
         kaki: "Choose a surah to start learning.",
         judulHalaman: "Choose a Surah | Quran Word Quiz",
-        deskripsiMeta: "Choose a surah to start Quran Word Quiz."
+        deskripsiMeta: "Choose Al-Fatihah, a Juz 30 surah, or a popular surah to start Quran Word Quiz."
       }
     };
 
@@ -370,12 +397,16 @@
 
     function tampilkanDaftar() {
       const fatihah = document.getElementById("daftarFatihah");
-      const pendek = document.getElementById("daftarPendek");
+      const juz30 = document.getElementById("daftarJuz30");
+      const populer = document.getElementById("daftarPopuler");
       fatihah.replaceChildren();
-      pendek.replaceChildren();
+      juz30.replaceChildren();
+      populer.replaceChildren();
 
       daftarSurah.forEach(surah => {
-        const tujuan = surah.kelompok === "fatihah" ? fatihah : pendek;
+        let tujuan = juz30;
+        if (surah.kelompok === "fatihah") tujuan = fatihah;
+        if (surah.kelompok === "populer") tujuan = populer;
         tujuan.appendChild(buatKartu(surah));
       });
     }
@@ -390,7 +421,8 @@
       document.getElementById("judul").textContent = teks.judul;
       document.getElementById("deskripsi").textContent = teks.deskripsi;
       document.getElementById("judul-fatihah").textContent = teks.judulFatihah;
-      document.getElementById("judul-surah-pendek").textContent = teks.judulPendek;
+      document.getElementById("judul-juz-30").textContent = teks.judulJuz30;
+      document.getElementById("judul-surah-populer").textContent = teks.judulPopuler;
       document.getElementById("kaki").textContent = teks.kaki;
 
       const indonesiaAktif = bahasaAktif === "id";

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Belajar Bahasa Al-Qur'an</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f7f4;
+      font-family: Arial, sans-serif;
+      color: #173b30;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      padding: 32px 24px;
+      background: white;
+      border-radius: 22px;
+      box-shadow: 0 10px 35px rgba(16, 80, 58, 0.12);
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      color: #176b4d;
+      font-size: 28px;
+    }
+
+    .surah {
+      margin: 12px 0 6px;
+      text-align: center;
+      font-weight: bold;
+      color: #526d64;
+    }
+
+    .petunjuk {
+      margin: 6px 0 18px;
+      text-align: center;
+      color: #71847d;
+    }
+
+    .progress-container {
+      width: 100%;
+      max-width: 500px;
+      height: 9px;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      background: #e3eee9;
+      border-radius: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: #19865f;
+      border-radius: 20px;
+      transition: width 0.3s;
+    }
+
+    .ayat {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      direction: rtl;
+    }
+
+    .kata {
+      width: 190px;
+      padding: 18px 12px;
+      border: 2px solid #dbe8e2;
+      border-radius: 16px;
+      background: #fbfdfc;
+      transition: 0.2s;
+    }
+
+    .arab {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      direction: rtl;
+      text-align: center;
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 41px;
+      line-height: 1.5;
+      color: #143f32;
+    }
+
+    select {
+      width: 100%;
+      padding: 11px 8px;
+      border: 1px solid #b8cdc3;
+      border-radius: 9px;
+      background: white;
+      color: #243f36;
+      font-size: 14px;
+      direction: ltr;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: 2px solid #5eb693;
+      border-color: #19865f;
+    }
+
+    .kata-benar {
+      border-color: #1c9b63;
+      background: #e8f8ef;
+    }
+
+    .kata-salah {
+      border-color: #d64c47;
+      background: #fdeceb;
+    }
+
+    .koreksi {
+      min-height: 18px;
+      margin-top: 10px;
+      direction: ltr;
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .teks-benar {
+      color: #168552;
+    }
+
+    .teks-salah {
+      color: #c33b37;
+    }
+
+    .tombol {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      margin: 28px auto 0;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #19865f;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tombol:hover {
+      background: #126b4c;
+    }
+
+    #hasil {
+      min-height: 25px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .peringatan {
+      color: #bd7610;
+    }
+
+    .hasil-benar {
+      color: #168552;
+    }
+
+    .hasil-belajar {
+      color: #c14742;
+    }
+
+    .selesai {
+      padding: 30px 10px;
+      text-align: center;
+    }
+
+    .selesai-arab {
+      margin: 20px 0;
+      direction: rtl;
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 56px;
+      color: #176b4d;
+    }
+
+    .selesai h2 {
+      color: #176b4d;
+    }
+
+    .nilai {
+      margin: 20px 0;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        align-items: flex-start;
+        padding: 12px;
+      }
+
+      .container {
+        padding: 25px 12px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .ayat {
+        gap: 10px;
+      }
+
+      .kata {
+        width: calc(50% - 5px);
+        padding: 14px 8px;
+      }
+
+      .arab {
+        min-height: 67px;
+        font-size: 34px;
+      }
+
+      select {
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .kata {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container" id="container">
+
+    <h1>Belajar Bahasa Al-Qur'an</h1>
+
+    <div class="surah" id="surah"></div>
+
+    <p class="petunjuk">
+      Pilih arti yang tepat untuk setiap kata.
+    </p>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <section class="ayat" id="ayat"></section>
+
+    <div id="hasil"></div>
+
+    <button
+      class="tombol"
+      id="tombolPeriksa"
+      onclick="periksaJawaban()"
+    >
+      Periksa Jawaban
+    </button>
+
+    <button
+      class="tombol"
+      id="tombolBerikutnya"
+      onclick="ayatBerikutnya()"
+      style="display: none;"
+    >
+      Ayat Berikutnya
+    </button>
+
+  </main>
+
+  <script>
+    const dataFatihah = [
+      {
+        ayat: 1,
+        words: [
+          {
+            arab: "بِسْمِ",
+            meaning: "Dengan nama"
+          },
+          {
+            arab: "اللّٰهِ",
+            meaning: "Allah"
+          },
+          {
+            arab: "الرَّحْمٰنِ",
+            meaning: "Yang Maha Pengasih"
+          },
+          {
+            arab: "الرَّحِيْمِ",
+            meaning: "Yang Maha Penyayang"
+          }
+        ]
+      },
+
+      {
+        ayat: 2,
+        words: [
+          {
+            arab: "اَلْحَمْدُ",
+            meaning: "Segala puji"
+          },
+          {
+            arab: "لِلّٰهِ",
+            meaning: "Bagi Allah"
+          },
+          {
+            arab: "رَبِّ",
+            meaning: "Tuhan"
+          },
+          {
+            arab: "الْعٰلَمِيْنَ",
+            meaning: "Seluruh alam"
+          }
+        ]
+      },
+
+      {
+        ayat: 3,
+        words: [
+          {
+            arab: "الرَّحْمٰنِ",
+            meaning: "Yang Maha Pengasih"
+          },
+          {
+            arab: "الرَّحِيْمِ",
+            meaning: "Yang Maha Penyayang"
+          }
+        ]
+      },
+
+      {
+        ayat: 4,
+        words: [
+          {
+            arab: "مٰلِكِ",
+            meaning: "Pemilik"
+          },
+          {
+            arab: "يَوْمِ",
+            meaning: "Hari"
+          },
+          {
+            arab: "الدِّيْنِ",
+            meaning: "Pembalasan"
+          }
+        ]
+      },
+
+      {
+        ayat: 5,
+        words: [
+          {
+            arab: "اِيَّاكَ",
+            meaning: "Hanya kepada-Mu"
+          },
+          {
+            arab: "نَعْبُدُ",
+            meaning: "Kami menyembah"
+          },
+          {
+            arab: "وَاِيَّاكَ",
+            meaning: "Dan hanya kepada-Mu"
+          },
+          {
+            arab: "نَسْتَعِيْنُ",
+            meaning: "Kami memohon pertolongan"
+          }
+        ]
+      },
+
+      {
+        ayat: 6,
+        words: [
+          {
+            arab: "اِهْدِنَا",
+            meaning: "Tunjukilah kami"
+          },
+          {
+            arab: "الصِّرَاطَ",
+            meaning: "Jalan"
+          },
+          {
+            arab: "الْمُسْتَقِيْمَ",
+            meaning: "Yang lurus"
+          }
+        ]
+      },
+
+      {
+        ayat: 7,
+        words: [
+          {
+            arab: "صِرَاطَ",
+            meaning: "Jalan"
+          },
+          {
+            arab: "الَّذِيْنَ",
+            meaning: "Orang-orang yang"
+          },
+          {
+            arab: "اَنْعَمْتَ",
+            meaning: "Engkau telah memberi nikmat"
+          },
+          {
+            arab: "عَلَيْهِمْ",
+            meaning: "Atas mereka"
+          },
+          {
+            arab: "غَيْرِ",
+            meaning: "Bukan"
+          },
+          {
+            arab: "الْمَغْضُوْبِ",
+            meaning: "Yang dimurkai"
+          },
+          {
+            arab: "عَلَيْهِمْ",
+            meaning: "Atas mereka"
+          },
+          {
+            arab: "وَلَا",
+            meaning: "Dan bukan"
+          },
+          {
+            arab: "الضَّاۤلِّيْنَ",
+            meaning: "Orang-orang yang sesat"
+          }
+        ]
+      }
+    ];
+
+    /*
+      Kumpulan arti ini digunakan untuk membuat
+      pilihan jawaban yang salah secara otomatis.
+    */
+    const kumpulanArti = [
+      "Dengan nama",
+      "Allah",
+      "Yang Maha Pengasih",
+      "Yang Maha Penyayang",
+      "Segala puji",
+      "Bagi Allah",
+      "Tuhan",
+      "Seluruh alam",
+      "Pemilik",
+      "Hari",
+      "Pembalasan",
+      "Hanya kepada-Mu",
+      "Kami menyembah",
+      "Dan hanya kepada-Mu",
+      "Kami memohon pertolongan",
+      "Tunjukilah kami",
+      "Jalan",
+      "Yang lurus",
+      "Orang-orang yang",
+      "Engkau telah memberi nikmat",
+      "Atas mereka",
+      "Bukan",
+      "Yang dimurkai",
+      "Dan bukan",
+      "Orang-orang yang sesat"
+    ];
+
+    let nomorAyat = 0;
+    let jumlahBenarTotal = 0;
+    let jumlahKataTotal = 0;
+    let ayatSudahDiperiksa = false;
+
+    function acakArray(array) {
+      const hasil = [...array];
+
+      for (let i = hasil.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [hasil[i], hasil[j]] =
+          [hasil[j], hasil[i]];
+      }
+
+      return hasil;
+    }
+
+    function buatPilihan(jawabanBenar) {
+      const jawabanSalah = kumpulanArti.filter(
+        arti => arti !== jawabanBenar
+      );
+
+      const tigaJawabanSalah =
+        acakArray(jawabanSalah).slice(0, 3);
+
+      return acakArray([
+        jawabanBenar,
+        ...tigaJawabanSalah
+      ]);
+    }
+
+    function tampilkanAyat() {
+      const dataAyat = dataFatihah[nomorAyat];
+      const tempatAyat = document.getElementById("ayat");
+
+      document.getElementById("surah").textContent =
+        `Surah Al-Fatihah · Ayat ${dataAyat.ayat} dari 7`;
+
+      const persentase =
+        ((nomorAyat + 1) / dataFatihah.length) * 100;
+
+      document.getElementById("progressBar").style.width =
+        `${persentase}%`;
+
+      tempatAyat.innerHTML = "";
+
+      dataAyat.words.forEach((word, index) => {
+        const kartuKata = document.createElement("div");
+        kartuKata.className = "kata";
+        kartuKata.dataset.jawaban = word.meaning;
+
+        const pilihan = buatPilihan(word.meaning);
+
+        let pilihanHTML =
+          `<option value="">Pilih arti</option>`;
+
+        pilihan.forEach(arti => {
+          pilihanHTML +=
+            `<option value="${arti}">${arti}</option>`;
+        });
+
+        kartuKata.innerHTML = `
+          <div class="arab">${word.arab}</div>
+
+          <select
+            id="jawaban-${nomorAyat}-${index}"
+            aria-label="Pilih arti kata ${word.arab}"
+          >
+            ${pilihanHTML}
+          </select>
+
+          <div class="koreksi"></div>
+        `;
+
+        tempatAyat.appendChild(kartuKata);
+      });
+
+      const hasil = document.getElementById("hasil");
+
+      hasil.textContent = "";
+      hasil.className = "";
+
+      document.getElementById("tombolPeriksa").style.display =
+        "block";
+
+      document.getElementById("tombolBerikutnya").style.display =
+        "none";
+
+      ayatSudahDiperiksa = false;
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function periksaJawaban() {
+      if (ayatSudahDiperiksa) {
+        return;
+      }
+
+      const semuaKata =
+        document.querySelectorAll(".kata");
+
+      const hasil =
+        document.getElementById("hasil");
+
+      let jumlahTerisi = 0;
+
+      semuaKata.forEach(kata => {
+        const select = kata.querySelector("select");
+
+        if (select.value !== "") {
+          jumlahTerisi++;
+        }
+      });
+
+      if (jumlahTerisi < semuaKata.length) {
+        hasil.textContent =
+          "Pilih arti untuk seluruh kata terlebih dahulu.";
+
+        hasil.className = "peringatan";
+        return;
+      }
+
+      let benarPadaAyatIni = 0;
+
+      semuaKata.forEach(kata => {
+        const jawabanBenar = kata.dataset.jawaban;
+        const select = kata.querySelector("select");
+        const koreksi = kata.querySelector(".koreksi");
+
+        select.disabled = true;
+
+        if (select.value === jawabanBenar) {
+          benarPadaAyatIni++;
+
+          kata.classList.add("kata-benar");
+
+          koreksi.textContent = "Benar";
+          koreksi.className = "koreksi teks-benar";
+        } else {
+          kata.classList.add("kata-salah");
+
+          koreksi.textContent =
+            "Jawaban: " + jawabanBenar;
+
+          koreksi.className = "koreksi teks-salah";
+        }
+      });
+
+      ayatSudahDiperiksa = true;
+
+      jumlahBenarTotal += benarPadaAyatIni;
+      jumlahKataTotal += semuaKata.length;
+
+      if (benarPadaAyatIni === semuaKata.length) {
+        hasil.textContent =
+          "Alhamdulillah, semua jawaban benar!";
+
+        hasil.className = "hasil-benar";
+      } else {
+        hasil.textContent =
+          `${benarPadaAyatIni} dari ` +
+          `${semuaKata.length} jawaban benar.`;
+
+        hasil.className = "hasil-belajar";
+      }
+
+      document.getElementById("tombolPeriksa").style.display =
+        "none";
+
+      const tombolBerikutnya =
+        document.getElementById("tombolBerikutnya");
+
+      tombolBerikutnya.style.display = "block";
+
+      if (nomorAyat === dataFatihah.length - 1) {
+        tombolBerikutnya.textContent = "Lihat Hasil";
+      } else {
+        tombolBerikutnya.textContent = "Ayat Berikutnya";
+      }
+    }
+
+    function ayatBerikutnya() {
+      if (!ayatSudahDiperiksa) {
+        return;
+      }
+
+      nomorAyat++;
+
+      if (nomorAyat < dataFatihah.length) {
+        tampilkanAyat();
+      } else {
+        tampilkanHasilAkhir();
+      }
+    }
+
+    function tampilkanHasilAkhir() {
+      const persentase = Math.round(
+        (jumlahBenarTotal / jumlahKataTotal) * 100
+      );
+
+      document.getElementById("container").innerHTML = `
+        <div class="selesai">
+          <h1>Belajar Bahasa Al-Qur'an</h1>
+
+          <div class="selesai-arab">
+            اَلْحَمْدُ لِلّٰهِ
+          </div>
+
+          <h2>Surah Al-Fatihah Selesai</h2>
+
+          <p>
+            Anda telah menyelesaikan seluruh kata
+            dalam Surah Al-Fatihah.
+          </p>
+
+          <div class="nilai">
+            ${jumlahBenarTotal} dari
+            ${jumlahKataTotal} jawaban benar
+            (${persentase}%)
+          </div>
+
+          <button
+            class="tombol"
+            onclick="location.reload()"
+          >
+            Ulangi Al-Fatihah
+          </button>
+        </div>
+      `;
+    }
+
+    tampilkanAyat();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pilih surah untuk memulai Quran Word Quiz.">
+  <meta name="theme-color" content="#176b4d">
+  <title>Pilih Surah | Quran Word Quiz</title>
+
+  <style>
+    :root {
+      --hijau: #19865f;
+      --hijau-gelap: #176b4d;
+      --hijau-sangat-gelap: #123d30;
+      --hijau-muda: #e8f5ef;
+      --latar: #f1f7f4;
+      --putih: #ffffff;
+      --teks: #173b30;
+      --teks-lembut: #687d75;
+      --garis: #d7e8e0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 5%, rgba(94, 182, 147, 0.16), transparent 25%),
+        var(--latar);
+      font-family: Arial, sans-serif;
+      color: var(--teks);
+    }
+
+    button, a { font: inherit; }
+
+    .halaman {
+      width: 100%;
+      max-width: 1220px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 22px clamp(16px, 4vw, 48px) 44px;
+    }
+
+    .kepala {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .kembali {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--garis);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--hijau-gelap);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .kembali:hover { background: var(--putih); }
+
+    .pilihan-bahasa {
+      display: flex;
+      padding: 4px;
+      border: 1px solid var(--garis);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .tombol-bahasa {
+      min-width: 44px;
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--teks-lembut);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tombol-bahasa.aktif {
+      background: var(--hijau-gelap);
+      color: var(--putih);
+    }
+
+    .kembali:focus-visible,
+    .tombol-bahasa:focus-visible,
+    .kartu-surah:focus-visible {
+      outline: 3px solid rgba(25, 134, 95, 0.27);
+      outline-offset: 3px;
+    }
+
+    .pembuka {
+      max-width: 720px;
+      margin: 58px auto 38px;
+      text-align: center;
+    }
+
+    .label-kecil {
+      display: inline-block;
+      margin-bottom: 13px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--hijau-muda);
+      color: var(--hijau-gelap);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--hijau-sangat-gelap);
+      font-size: clamp(34px, 5vw, 52px);
+      letter-spacing: -0.035em;
+    }
+
+    .deskripsi {
+      margin: 14px 0 0;
+      color: var(--teks-lembut);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .bagian {
+      margin-top: 34px;
+    }
+
+    .judul-bagian {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 15px;
+      color: var(--hijau-gelap);
+      font-size: 18px;
+    }
+
+    .judul-bagian::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--garis);
+    }
+
+    .daftar-surah {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .kartu-surah {
+      min-height: 138px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 17px;
+      border: 1px solid var(--garis);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--teks);
+      text-decoration: none;
+      box-shadow: 0 5px 16px rgba(16, 80, 58, 0.055);
+      transition: transform 0.17s, border-color 0.17s, box-shadow 0.17s;
+    }
+
+    .kartu-surah:hover {
+      transform: translateY(-3px);
+      border-color: #8fcbb2;
+      box-shadow: 0 10px 24px rgba(16, 80, 58, 0.11);
+    }
+
+    .atas-kartu {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .nomor-surah {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--hijau-muda);
+      color: var(--hijau-gelap);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nama-arab {
+      direction: rtl;
+      color: var(--hijau-gelap);
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 27px;
+      line-height: 1.25;
+    }
+
+    .nama-latin {
+      display: block;
+      margin-top: 15px;
+      color: var(--hijau-sangat-gelap);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .jumlah-ayat {
+      display: block;
+      margin-top: 5px;
+      color: var(--teks-lembut);
+      font-size: 12px;
+    }
+
+    .kaki {
+      margin-top: 42px;
+      color: #82938d;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .daftar-surah { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 650px) {
+      .halaman { padding-top: 16px; }
+      .pembuka { margin-top: 42px; }
+      .daftar-surah { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .kartu-surah { min-height: 130px; padding: 14px; }
+    }
+
+    @media (max-width: 360px) {
+      .daftar-surah { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="halaman">
+    <header class="kepala">
+      <a class="kembali" href="index.html">
+        <span aria-hidden="true">←</span>
+        <span id="teksKembali">Beranda</span>
+      </a>
+
+      <div class="pilihan-bahasa" role="group" aria-label="Language">
+        <button class="tombol-bahasa aktif" id="bahasaId" type="button" onclick="gantiBahasa('id')" aria-pressed="true">ID</button>
+        <button class="tombol-bahasa" id="bahasaEn" type="button" onclick="gantiBahasa('en')" aria-pressed="false">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="pembuka">
+        <div class="label-kecil" id="labelKecil">Quran Word Quiz</div>
+        <h1 id="judul">Pilih Surah</h1>
+        <p class="deskripsi" id="deskripsi">
+          Pilih surah yang ingin dipelajari. Kuis akan ditampilkan satu ayat demi satu ayat.
+        </p>
+      </section>
+
+      <section class="bagian" aria-labelledby="judul-fatihah">
+        <h2 class="judul-bagian" id="judul-fatihah">Al-Fatihah</h2>
+        <div class="daftar-surah" id="daftarFatihah"></div>
+      </section>
+
+      <section class="bagian" aria-labelledby="judul-surah-pendek">
+        <h2 class="judul-bagian" id="judul-surah-pendek">Ad-Duha hingga An-Nas</h2>
+        <div class="daftar-surah" id="daftarPendek"></div>
+      </section>
+    </main>
+
+    <footer class="kaki" id="kaki">Pilih satu surah untuk mulai belajar.</footer>
+  </div>
+
+  <script>
+    "use strict";
+
+    const daftarSurah = [
+      { nomor: 1, slug: "al-fatihah", nama: "Al-Fatihah", arab: "الْفَاتِحَة", ayat: 7, kelompok: "fatihah" },
+      { nomor: 93, slug: "ad-duha", nama: "Ad-Duha", arab: "الضُّحَىٰ", ayat: 11 },
+      { nomor: 94, slug: "asy-syarh", nama: "Asy-Syarh", arab: "الشَّرْح", ayat: 8 },
+      { nomor: 95, slug: "at-tin", nama: "At-Tin", arab: "التِّين", ayat: 8 },
+      { nomor: 96, slug: "al-alaq", nama: "Al-'Alaq", arab: "الْعَلَق", ayat: 19 },
+      { nomor: 97, slug: "al-qadr", nama: "Al-Qadr", arab: "الْقَدْر", ayat: 5 },
+      { nomor: 98, slug: "al-bayyinah", nama: "Al-Bayyinah", arab: "الْبَيِّنَة", ayat: 8 },
+      { nomor: 99, slug: "az-zalzalah", nama: "Az-Zalzalah", arab: "الزَّلْزَلَة", ayat: 8 },
+      { nomor: 100, slug: "al-adiyat", nama: "Al-'Adiyat", arab: "الْعَادِيَات", ayat: 11 },
+      { nomor: 101, slug: "al-qariah", nama: "Al-Qari'ah", arab: "الْقَارِعَة", ayat: 11 },
+      { nomor: 102, slug: "at-takatsur", nama: "At-Takatsur", arab: "التَّكَاثُر", ayat: 8 },
+      { nomor: 103, slug: "al-asr", nama: "Al-'Asr", arab: "الْعَصْر", ayat: 3 },
+      { nomor: 104, slug: "al-humazah", nama: "Al-Humazah", arab: "الْهُمَزَة", ayat: 9 },
+      { nomor: 105, slug: "al-fil", nama: "Al-Fil", arab: "الْفِيل", ayat: 5 },
+      { nomor: 106, slug: "quraisy", nama: "Quraisy", arab: "قُرَيْش", ayat: 4 },
+      { nomor: 107, slug: "al-maun", nama: "Al-Ma'un", arab: "الْمَاعُون", ayat: 7 },
+      { nomor: 108, slug: "al-kautsar", nama: "Al-Kautsar", arab: "الْكَوْثَر", ayat: 3 },
+      { nomor: 109, slug: "al-kafirun", nama: "Al-Kafirun", arab: "الْكَافِرُون", ayat: 6 },
+      { nomor: 110, slug: "an-nasr", nama: "An-Nasr", arab: "النَّصْر", ayat: 3 },
+      { nomor: 111, slug: "al-lahab", nama: "Al-Lahab", arab: "الْمَسَد", ayat: 5 },
+      { nomor: 112, slug: "al-ikhlas", nama: "Al-Ikhlas", arab: "الْإِخْلَاص", ayat: 4 },
+      { nomor: 113, slug: "al-falaq", nama: "Al-Falaq", arab: "الْفَلَق", ayat: 5 },
+      { nomor: 114, slug: "an-nas", nama: "An-Nas", arab: "النَّاس", ayat: 6 }
+    ];
+
+    const teksBahasa = {
+      id: {
+        teksKembali: "Beranda",
+        judul: "Pilih Surah",
+        deskripsi: "Pilih surah yang ingin dipelajari. Kuis akan ditampilkan satu ayat demi satu ayat.",
+        judulFatihah: "Al-Fatihah",
+        judulPendek: "Ad-Duha hingga An-Nas",
+        satuAyat: "ayat",
+        kaki: "Pilih satu surah untuk mulai belajar.",
+        judulHalaman: "Pilih Surah | Quran Word Quiz",
+        deskripsiMeta: "Pilih surah untuk memulai Quran Word Quiz."
+      },
+      en: {
+        teksKembali: "Home",
+        judul: "Choose a Surah",
+        deskripsi: "Choose a surah to study. The quiz will be presented one verse at a time.",
+        judulFatihah: "Al-Fatihah",
+        judulPendek: "Ad-Duha to An-Nas",
+        satuAyat: "verses",
+        kaki: "Choose a surah to start learning.",
+        judulHalaman: "Choose a Surah | Quran Word Quiz",
+        deskripsiMeta: "Choose a surah to start Quran Word Quiz."
+      }
+    };
+
+    let bahasaAktif = "id";
+
+    function buatKartu(surah) {
+      const tautan = document.createElement("a");
+      tautan.className = "kartu-surah";
+      tautan.href = `kuis.html?surah=${encodeURIComponent(surah.slug)}`;
+      tautan.setAttribute("aria-label", `${surah.nama}, ${surah.ayat} ${teksBahasa[bahasaAktif].satuAyat}`);
+
+      const atas = document.createElement("div");
+      atas.className = "atas-kartu";
+
+      const nomor = document.createElement("span");
+      nomor.className = "nomor-surah";
+      nomor.textContent = surah.nomor;
+
+      const arab = document.createElement("span");
+      arab.className = "nama-arab";
+      arab.lang = "ar";
+      arab.textContent = surah.arab;
+      atas.append(nomor, arab);
+
+      const bawah = document.createElement("div");
+      const nama = document.createElement("span");
+      nama.className = "nama-latin";
+      nama.textContent = surah.nama;
+
+      const jumlah = document.createElement("span");
+      jumlah.className = "jumlah-ayat";
+      jumlah.textContent = `${surah.ayat} ${teksBahasa[bahasaAktif].satuAyat}`;
+      bawah.append(nama, jumlah);
+
+      tautan.append(atas, bawah);
+      return tautan;
+    }
+
+    function tampilkanDaftar() {
+      const fatihah = document.getElementById("daftarFatihah");
+      const pendek = document.getElementById("daftarPendek");
+      fatihah.replaceChildren();
+      pendek.replaceChildren();
+
+      daftarSurah.forEach(surah => {
+        const tujuan = surah.kelompok === "fatihah" ? fatihah : pendek;
+        tujuan.appendChild(buatKartu(surah));
+      });
+    }
+
+    function gantiBahasa(bahasa) {
+      bahasaAktif = bahasa === "en" ? "en" : "id";
+      const teks = teksBahasa[bahasaAktif];
+      document.documentElement.lang = bahasaAktif;
+      document.title = teks.judulHalaman;
+      document.querySelector('meta[name="description"]').content = teks.deskripsiMeta;
+      document.getElementById("teksKembali").textContent = teks.teksKembali;
+      document.getElementById("judul").textContent = teks.judul;
+      document.getElementById("deskripsi").textContent = teks.deskripsi;
+      document.getElementById("judul-fatihah").textContent = teks.judulFatihah;
+      document.getElementById("judul-surah-pendek").textContent = teks.judulPendek;
+      document.getElementById("kaki").textContent = teks.kaki;
+
+      const indonesiaAktif = bahasaAktif === "id";
+      document.getElementById("bahasaId").classList.toggle("aktif", indonesiaAktif);
+      document.getElementById("bahasaEn").classList.toggle("aktif", !indonesiaAktif);
+      document.getElementById("bahasaId").setAttribute("aria-pressed", indonesiaAktif);
+      document.getElementById("bahasaEn").setAttribute("aria-pressed", !indonesiaAktif);
+      localStorage.setItem("bahasaQuranQuiz", bahasaAktif);
+      tampilkanDaftar();
+    }
+
+    gantiBahasa(localStorage.getItem("bahasaQuranQuiz") === "en" ? "en" : "id");
+  </script>
+</body>
+</html>

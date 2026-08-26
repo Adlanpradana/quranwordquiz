@@ -22,6 +22,8 @@
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -52,6 +54,21 @@
       justify-content: space-between;
       gap: 20px;
     }
+
+    .menu-kanan {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .tautan-tentang {
+      color: var(--hijau-gelap);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .tautan-tentang:hover { text-decoration: underline; }
 
     .merek {
       display: flex;
@@ -102,7 +119,9 @@
     }
 
     .tombol-bahasa:focus-visible,
-    .tombol-mulai:focus-visible {
+    .tombol-mulai:focus-visible,
+    .tautan-tentang:focus-visible,
+    .email:focus-visible {
       outline: 3px solid rgba(25, 134, 95, 0.28);
       outline-offset: 3px;
     }
@@ -276,11 +295,120 @@
       transform: rotate(-5deg);
     }
 
+    .tentang {
+      width: 100%;
+      max-width: 1180px;
+      margin: 35px auto 0;
+      padding: clamp(34px, 6vw, 68px);
+      scroll-margin-top: 20px;
+      border: 1px solid rgba(215, 232, 224, 0.9);
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 14px 40px rgba(16, 80, 58, 0.08);
+    }
+
+    .tentang-pembuka {
+      max-width: 780px;
+      margin: 0 auto 34px;
+      text-align: center;
+    }
+
+    .tentang h2 {
+      margin: 0;
+      color: var(--hijau-sangat-gelap);
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: -0.025em;
+    }
+
+    .tentang-ringkas {
+      margin: 16px 0 0;
+      color: var(--teks-lembut);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .tentang-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .kartu-info {
+      padding: 23px;
+      border: 1px solid var(--garis);
+      border-radius: 17px;
+      background: #fbfdfc;
+    }
+
+    .ikon-info {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      background: var(--hijau-muda);
+      color: var(--hijau-gelap);
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .kartu-info h3 {
+      margin: 0;
+      color: var(--hijau-gelap);
+      font-size: 17px;
+    }
+
+    .kartu-info p {
+      margin: 10px 0 0;
+      color: var(--teks-lembut);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .catatan {
+      margin-top: 17px;
+      padding: 20px 22px;
+      border-left: 4px solid var(--hijau);
+      border-radius: 12px;
+      background: var(--hijau-muda);
+      color: #315d4d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .kontak {
+      margin-top: 28px;
+      padding-top: 27px;
+      border-top: 1px solid var(--garis);
+      text-align: center;
+    }
+
+    .kontak h3 {
+      margin: 0;
+      color: var(--hijau-gelap);
+      font-size: 19px;
+    }
+
+    .kontak p {
+      margin: 9px auto 0;
+      color: var(--teks-lembut);
+      line-height: 1.65;
+    }
+
+    .email {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--hijau-gelap);
+      font-weight: 700;
+      text-underline-offset: 3px;
+    }
+
     .kaki {
       width: 100%;
       max-width: 1180px;
       margin: 0 auto;
-      padding-top: 12px;
+      padding: 28px 0 6px;
       color: #82938d;
       text-align: center;
       font-size: 13px;
@@ -301,11 +429,14 @@
       }
 
       .visual { min-height: 390px; }
+      .tentang-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 520px) {
       .halaman { padding: 17px 14px; }
       .merek span:last-child { display: none; }
+      .menu-kanan { gap: 8px; }
+      .tautan-tentang { font-size: 13px; }
       .utama { padding: 43px 0 28px; }
       h1 { font-size: clamp(40px, 13vw, 56px); }
       .deskripsi { font-size: 16px; }
@@ -332,6 +463,15 @@
         width: 82px;
         height: 50px;
       }
+
+      .tentang {
+        margin-top: 20px;
+        padding: 30px 15px;
+        border-radius: 20px;
+      }
+
+      .tentang-ringkas { font-size: 15px; }
+      .kartu-info { padding: 19px; }
     }
   </style>
 </head>
@@ -344,9 +484,13 @@
         <span>Quran Word Quiz</span>
       </div>
 
-      <div class="pilihan-bahasa" role="group" aria-label="Language">
-        <button class="tombol-bahasa aktif" id="bahasaId" type="button" onclick="gantiBahasa('id')" aria-pressed="true">ID</button>
-        <button class="tombol-bahasa" id="bahasaEn" type="button" onclick="gantiBahasa('en')" aria-pressed="false">EN</button>
+      <div class="menu-kanan">
+        <a class="tautan-tentang" id="tautanTentang" href="#tentang">Tentang</a>
+
+        <div class="pilihan-bahasa" role="group" aria-label="Language">
+          <button class="tombol-bahasa aktif" id="bahasaId" type="button" onclick="gantiBahasa('id')" aria-pressed="true">ID</button>
+          <button class="tombol-bahasa" id="bahasaEn" type="button" onclick="gantiBahasa('en')" aria-pressed="false">EN</button>
+        </div>
       </div>
     </header>
 
@@ -376,6 +520,55 @@
       </section>
     </main>
 
+    <section class="tentang" id="tentang">
+      <div class="tentang-pembuka">
+        <h2 id="judulTentang">Tentang Quran Word Quiz</h2>
+        <p class="tentang-ringkas" id="tentangRingkas">
+          Quran Word Quiz membantu pengguna mempelajari arti kata dalam Al-Qur'an dengan menebak arti setiap kata sambil melihat susunannya dalam konteks ayat. Dengan cara ini, pengguna dapat mengenali kata sebagaimana digunakan dalam ayat, bukan sekadar menghafal kosakata secara terpisah.
+        </p>
+      </div>
+
+      <div class="tentang-grid">
+        <article class="kartu-info">
+          <div class="ikon-info" aria-hidden="true">1</div>
+          <h3 id="judulMetode">Belajar dalam konteks ayat</h3>
+          <p id="isiMetode">
+            Setiap kuis menampilkan kata-kata sesuai urutannya dalam ayat. Pengguna memilih arti yang paling tepat untuk setiap kata.
+          </p>
+        </article>
+
+        <article class="kartu-info">
+          <div class="ikon-info" aria-hidden="true">30</div>
+          <h3 id="judulCakupan">Cakupan terpilih</h3>
+          <p id="isiCakupan">
+            Materi saat ini mencakup Al-Fatihah, seluruh surah dalam Juz 30, serta Al-Kahf, Yasin, Ar-Rahman, Al-Waqi'ah, dan Al-Mulk.
+          </p>
+        </article>
+
+        <article class="kartu-info">
+          <div class="ikon-info" aria-hidden="true">ق</div>
+          <h3 id="judulArti">Arti singkat untuk latihan</h3>
+          <p id="isiArti">
+            Padanan arti dibuat singkat dan sederhana agar mudah digunakan dalam kuis kosakata kata per kata.
+          </p>
+        </article>
+      </div>
+
+      <div class="catatan" id="catatan">
+        Arti kata dapat berbeda dari susunan terjemahan ayat secara lengkap. Quran Word Quiz bukan tafsir dan tidak dimaksudkan untuk menggantikan terjemahan Al-Qur'an maupun tafsir yang tepercaya. Teks Arab dan padanan kata diperoleh melalui Quran Foundation Content API.
+      </div>
+
+      <div class="kontak">
+        <h3 id="judulKontak">Masukan dan Koreksi</h3>
+        <p id="isiKontak">
+          Menemukan arti kata yang perlu diperbaiki atau mengalami masalah saat menggunakan situs? Silakan hubungi:
+        </p>
+        <a class="email" href="mailto:adlan.pradana@gmail.com?subject=Masukan%20Quran%20Word%20Quiz">
+          adlan.pradana@gmail.com
+        </a>
+      </div>
+    </section>
+
     <footer class="kaki" id="kaki">
       Belajar secara bertahap, tanpa perlu menghafal semuanya sekaligus.
     </footer>
@@ -386,6 +579,7 @@
 
     const teksBahasa = {
       id: {
+        tautanTentang: "Tentang",
         labelKecil: "Al-Fatihah · Juz 30 · Surah Pilihan",
         judul: 'Kenali kata.<br><span class="sorot">Pahami ayat.</span>',
         deskripsi: "Pelajari arti kata dalam Al-Fatihah, Juz 30 dari An-Naba hingga An-Nas, serta beberapa surah populer lainnya.",
@@ -393,10 +587,22 @@
         nomorContoh: "Contoh kata",
         jawabanContoh: "Segala puji ✓",
         ornamenDua: "Mudah",
+        judulTentang: "Tentang Quran Word Quiz",
+        tentangRingkas: "Quran Word Quiz membantu pengguna mempelajari arti kata dalam Al-Qur'an dengan menebak arti setiap kata sambil melihat susunannya dalam konteks ayat. Dengan cara ini, pengguna dapat mengenali kata sebagaimana digunakan dalam ayat, bukan sekadar menghafal kosakata secara terpisah.",
+        judulMetode: "Belajar dalam konteks ayat",
+        isiMetode: "Setiap kuis menampilkan kata-kata sesuai urutannya dalam ayat. Pengguna memilih arti yang paling tepat untuk setiap kata.",
+        judulCakupan: "Cakupan terpilih",
+        isiCakupan: "Materi saat ini mencakup Al-Fatihah, seluruh surah dalam Juz 30, serta Al-Kahf, Yasin, Ar-Rahman, Al-Waqi'ah, dan Al-Mulk.",
+        judulArti: "Arti singkat untuk latihan",
+        isiArti: "Padanan arti dibuat singkat dan sederhana agar mudah digunakan dalam kuis kosakata kata per kata.",
+        catatan: "Arti kata dapat berbeda dari susunan terjemahan ayat secara lengkap. Quran Word Quiz bukan tafsir dan tidak dimaksudkan untuk menggantikan terjemahan Al-Qur'an maupun tafsir yang tepercaya. Teks Arab dan padanan kata diperoleh melalui Quran Foundation Content API.",
+        judulKontak: "Masukan dan Koreksi",
+        isiKontak: "Menemukan arti kata yang perlu diperbaiki atau mengalami masalah saat menggunakan situs? Silakan hubungi:",
         kaki: "Belajar secara bertahap, tanpa perlu menghafal semuanya sekaligus.",
         deskripsiMeta: "Pelajari arti kata Al-Fatihah, Juz 30 dari An-Naba hingga An-Nas, dan surah-surah pilihan melalui Quran Word Quiz."
       },
       en: {
+        tautanTentang: "About",
         labelKecil: "Al-Fatihah · Juz 30 · Selected Surahs",
         judul: 'Know the words.<br><span class="sorot">Understand the verse.</span>',
         deskripsi: "Learn word meanings from Al-Fatihah, Juz 30 from An-Naba to An-Nas, and several other popular surahs.",
@@ -404,6 +610,17 @@
         nomorContoh: "Example word",
         jawabanContoh: "All praise ✓",
         ornamenDua: "Simple",
+        judulTentang: "About Quran Word Quiz",
+        tentangRingkas: "Quran Word Quiz helps users learn Quranic word meanings by guessing the meaning of each word while seeing its position within the context of a verse. This helps users recognise words as they are used in the Quran, rather than memorising isolated vocabulary.",
+        judulMetode: "Learn within a verse",
+        isiMetode: "Each quiz presents words in their original order within the verse. Users choose the most appropriate meaning for each word.",
+        judulCakupan: "Selected coverage",
+        isiCakupan: "Current content includes Al-Fatihah, every surah in Juz 30, as well as Al-Kahf, Yasin, Ar-Rahman, Al-Waqi'ah, and Al-Mulk.",
+        judulArti: "Short meanings for practice",
+        isiArti: "Word equivalents are intentionally kept short and simple for use in a word-by-word vocabulary quiz.",
+        catatan: "Word meanings may differ from the wording used in a complete verse translation. Quran Word Quiz is not a tafsir and is not intended to replace a trusted Quran translation or tafsir. Arabic text and word-level meanings are obtained through the Quran Foundation Content API.",
+        judulKontak: "Feedback and Corrections",
+        isiKontak: "Found a word meaning that may need correction or encountered a problem while using the website? Please contact:",
         kaki: "Learn gradually, without having to memorise everything at once.",
         deskripsiMeta: "Learn word meanings from Al-Fatihah, Juz 30 from An-Naba to An-Nas, and selected surahs through Quran Word Quiz."
       }
@@ -413,6 +630,7 @@
       const teks = teksBahasa[bahasa] || teksBahasa.id;
 
       document.documentElement.lang = bahasa;
+      document.getElementById("tautanTentang").textContent = teks.tautanTentang;
       document.getElementById("labelKecil").textContent = teks.labelKecil;
       document.getElementById("judul").innerHTML = teks.judul;
       document.getElementById("deskripsi").textContent = teks.deskripsi;
@@ -420,6 +638,17 @@
       document.getElementById("nomorContoh").textContent = teks.nomorContoh;
       document.getElementById("jawabanContoh").textContent = teks.jawabanContoh;
       document.getElementById("ornamenDua").textContent = teks.ornamenDua;
+      document.getElementById("judulTentang").textContent = teks.judulTentang;
+      document.getElementById("tentangRingkas").textContent = teks.tentangRingkas;
+      document.getElementById("judulMetode").textContent = teks.judulMetode;
+      document.getElementById("isiMetode").textContent = teks.isiMetode;
+      document.getElementById("judulCakupan").textContent = teks.judulCakupan;
+      document.getElementById("isiCakupan").textContent = teks.isiCakupan;
+      document.getElementById("judulArti").textContent = teks.judulArti;
+      document.getElementById("isiArti").textContent = teks.isiArti;
+      document.getElementById("catatan").textContent = teks.catatan;
+      document.getElementById("judulKontak").textContent = teks.judulKontak;
+      document.getElementById("isiKontak").textContent = teks.isiKontak;
       document.getElementById("kaki").textContent = teks.kaki;
       document.querySelector('meta[name="description"]').content = teks.deskripsiMeta;
 

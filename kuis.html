@@ -389,6 +389,9 @@
         jawabanBenar: "jawaban benar",
         selesai: "Selesai",
         keteranganSelesai: "Anda telah menyelesaikan seluruh kata dalam surah ini.",
+        bagikan: "Bagikan Hasil",
+        hasilDisalin: "Hasil dan tautan berhasil disalin. Silakan tempelkan di WhatsApp atau aplikasi lain.",
+        gagalBagikan: "Hasil belum dapat dibagikan. Silakan coba lagi.",
         ulangi: "Ulangi Surah",
         pilihLain: "Pilih Surah Lain",
         judulError: "Data surah belum tersedia",
@@ -413,6 +416,9 @@
         jawabanBenar: "correct answers",
         selesai: "Completed",
         keteranganSelesai: "You have completed all the words in this surah.",
+        bagikan: "Share Result",
+        hasilDisalin: "The result and link have been copied. You can paste them into WhatsApp or another app.",
+        gagalBagikan: "The result could not be shared. Please try again.",
         ulangi: "Repeat Surah",
         pilihLain: "Choose Another Surah",
         judulError: "Surah data is not available",
@@ -633,6 +639,51 @@
       );
     }
 
+    function buatTeksBagikan(skor, persentase) {
+      if (bahasaAktif === "en") {
+        return `Alhamdulillah, I completed the ${surahAktif.nama} quiz on Quran Word Quiz with a score of ${persentase}% (${skor.benar}/${skor.total}).\n\nTry it here:`;
+      }
+
+      return `Alhamdulillah, saya telah menyelesaikan kuis ${surahAktif.nama} di Quran Word Quiz dengan skor ${persentase}% (${skor.benar}/${skor.total}).\n\nYuk, coba juga:`;
+    }
+
+    async function bagikanHasil(skor, persentase, status) {
+      const dataBagikan = {
+        title: `Quran Word Quiz - ${surahAktif.nama}`,
+        text: buatTeksBagikan(skor, persentase),
+        url: "https://quranwordquiz.com/"
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(dataBagikan);
+          status.textContent = "";
+          return;
+        }
+
+        const teksLengkap = `${dataBagikan.text}\n${dataBagikan.url}`;
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(teksLengkap);
+        } else {
+          const penyalin = document.createElement("textarea");
+          penyalin.value = teksLengkap;
+          penyalin.style.position = "fixed";
+          penyalin.style.opacity = "0";
+          document.body.appendChild(penyalin);
+          penyalin.select();
+          const berhasil = document.execCommand("copy");
+          penyalin.remove();
+          if (!berhasil) throw new Error("Copy failed");
+        }
+        status.textContent = teks().hasilDisalin;
+        status.className = "hasil-benar";
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        status.textContent = teks().gagalBagikan;
+        status.className = "hasil-belajar";
+      }
+    }
+
     function tampilkanHasilAkhir() {
       sembunyikanSemuaHalaman();
       const halaman = document.getElementById("halamanHasil");
@@ -650,7 +701,15 @@
         `${skor.benar} ${teks().dari} ${skor.total} ${teks().jawabanBenar} (${persentase}%)`
       );
 
-      const ulangi = buatElemen("button", "tombol", `${teks().ulangi} ${surahAktif.nama}`);
+      const bagikan = buatElemen("button", "tombol", teks().bagikan);
+      bagikan.type = "button";
+
+      const statusBagikan = buatElemen("p", "", "");
+      statusBagikan.setAttribute("role", "status");
+      statusBagikan.setAttribute("aria-live", "polite");
+      bagikan.addEventListener("click", () => bagikanHasil(skor, persentase, statusBagikan));
+
+      const ulangi = buatElemen("button", "tombol tombol-sekunder", `${teks().ulangi} ${surahAktif.nama}`);
       ulangi.type = "button";
       ulangi.addEventListener("click", mulaiKuis);
 
@@ -659,7 +718,7 @@
       pilihLain.href = "pilih-surah.html";
       pilihLain.textContent = teks().pilihLain;
 
-      halaman.append(arab, judul, keterangan, nilai, ulangi, pilihLain);
+      halaman.append(arab, judul, keterangan, nilai, bagikan, statusBagikan, ulangi, pilihLain);
       halaman.hidden = false;
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
